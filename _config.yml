@@ -1,0 +1,141 @@
+# Hexo Configuration
+## Docs: https://hexo.io/docs/configuration.html
+## Source: https://github.com/hexojs/hexo/
+
+# Site
+title: ML & DL 笔记
+subtitle: 机器学习 · 深度学习 · 大模型
+description: 记录机器学习、深度学习与大语言模型的学习笔记、实战与思考
+keywords: Machine Learning, Deep Learning, LLM, 大模型, 深度学习, 机器学习
+author: Your Name
+language: zh-CN
+timezone: Asia/Shanghai
+
+# URL
+## 部署到 GitHub Pages（项目页，非个人主页）时，root 必须指向仓库子路径
+url: https://WXL-1871.github.io/NLP
+root: /NLP/
+permalink: :year/:month/:day/:abbrlink/
+permalink_defaults:
+pretty_urls:
+  trailing_index: true
+  trailing_html: true
+
+# Directory
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render:
+
+# Writing
+new_post_name: :title.md
+default_layout: post
+titlecase: false
+external_link:
+  enable: true
+  field: site
+  exclude: ''
+filename_case: 0
+render_drafts: false
+post_asset_folder: true
+relative_link: false
+future: true
+syntax_highlighter: highlight.js
+highlight:
+  line_number: true
+  auto_detect: false
+  tab_replace: ''
+  wrap: true
+  hljs: false
+  exclude_languages:
+    - mermaid
+prismjs:
+  preprocess: true
+  line_number: true
+  tab_replace: ''
+
+# Home page setting
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
+
+# Category & Tag
+default_category: 随笔
+category_map:
+  机器学习: machine-learning
+  深度学习: deep-learning
+  大模型: llm
+  随笔: notes
+tag_map:
+
+# Metadata elements
+meta_generator: true
+
+# Date / Time format
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+updated_option: 'mtime'
+
+# Pagination
+per_page: 10
+pagination_dir: page
+
+# Include / Exclude file(s)
+include:
+exclude:
+ignore:
+
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+theme: next
+
+# 文章链接优化
+abbrlink:
+  alg: crc16
+  rep: hex
+  auto_prefix:
+  perma: 0
+
+# 部署到 GitHub Pages
+deploy:
+  type: git
+  repo: https://github.com/WXL-1871/NLP.git
+  branch: main
+  message: "Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}"
+
+# Feed
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
+  order_by: -date
+  icon: icon.png
+  autodiscovery: true
+  template:
+
+# Sitemap
+sitemap:
+  path: sitemap.xml
+  rel: false
+  tags: true
+  categories: true
+
+# 文章字数统计 & 阅读时长
+symbols_count_time:
+  symbols: true
+  time: true
+  total_symbols: true
+  total_time: true
+  awl: 4
+  wpm: 275
+  suffix: mins
