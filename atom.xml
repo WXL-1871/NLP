@@ -11,7 +11,7 @@
   <rights>All rights reserved 2026, 王笑丽</rights>
   <subtitle>记录生活 · 分享技术 · 探索未知</subtitle>
   <title>笑丽的小站</title>
-  <updated>2026-08-30T00:52:42.365Z</updated>
+  <updated>2026-08-30T02:59:37.280Z</updated>
   <entry>
     <author>
       <name>王笑丽</name>
@@ -27,7 +27,7 @@
     <published>2024-07-05T01:30:00.000Z</published>
     <summary>不会写 Prompt 就用不好大模型。本文整理 6 大 Prompt 模式 + ReAct Agent 实战代码，附可复用的模板。</summary>
     <title>大模型 Prompt 工程实战：从 Zero-Shot 到 ReAct Agent</title>
-    <updated>2026-08-30T00:52:42.365Z</updated>
+    <updated>2026-08-30T02:59:37.280Z</updated>
   </entry>
   <entry>
     <author>
@@ -43,7 +43,7 @@
     <published>2024-06-10T06:00:00.000Z</published>
     <summary>Transformer 是当代大模型的基石，本文带你拆解 Self-Attention、多头机制、位置编码与 Layer Norm 的工程细节。</summary>
     <title>Transformer 架构详解：从 Self-Attention 到多头机制</title>
-    <updated>2026-08-30T00:52:42.363Z</updated>
+    <updated>2026-08-30T02:59:37.276Z</updated>
   </entry>
   <entry>
     <author>
@@ -58,6 +58,6 @@
     <published>2024-05-20T02:00:00.000Z</published>
     <summary>线性回归是机器学习的&quot;Hello World&quot;，本文从公式推导到 Python 实现再到梯度下降，帮你一次性吃透。</summary>
     <title>线性回归：从公式到梯度下降</title>
-    <updated>2026-08-30T00:52:42.360Z</updated>
+    <updated>2026-08-30T02:59:37.269Z</updated>
   </entry>
 </feed>
