@@ -1294,7 +1294,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #fff;
+    background: #ff2aff;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -3482,4 +3482,181 @@ table tr:hover {
   color: #fff;
   border-color: #d81b60;
   box-shadow: 0 5px 16px rgba(236,64,122,0.4);
+}
+/* ============================================================
+   联系我页面样式 · Contact Page
+   ============================================================ */
+.contact-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.contact-intro {
+  text-align: center;
+  margin-bottom: 28px;
+  color: #ad1457;
+  font-size: 1.05em;
+}
+/* ---------- 表单 ---------- */
+.contact-form-wrap {
+  background: #fff;
+  border: 1px solid #fce4ec;
+  border-radius: 16px;
+  padding: 28px 30px;
+  margin-bottom: 28px;
+  box-shadow: 0 2px 16px rgba(244,143,177,0.1);
+}
+.contact-form-title {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #880e4f;
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.contact-form-desc {
+  color: #ad1457;
+  font-size: 0.88em;
+  margin: 0 0 22px;
+  opacity: 0.8;
+  line-height: 1.6;
+}
+.contact-field {
+  margin-bottom: 18px;
+}
+.contact-field label {
+  display: block;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #880e4f;
+  margin-bottom: 6px;
+}
+.contact-field input,
+.contact-field textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #fce4ec;
+  border-radius: 10px;
+  font-size: 0.95em;
+  color: #5a4a52;
+  background: #fdf2f5;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.contact-field input:focus,
+.contact-field textarea:focus {
+  outline: none;
+  border-color: #ec407a;
+  box-shadow: 0 0 0 3px rgba(236,64,122,0.12);
+  background: #fff;
+}
+.contact-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+.contact-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ec407a, #c2185b);
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 24px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(236,64,122,0.35);
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+}
+.contact-submit-btn:hover {
+  background: linear-gradient(135deg, #d81b60, #ad1457);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(236,64,122,0.45);
+}
+/* ---------- 其他联系方式 ---------- */
+.contact-alt-title {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #880e4f;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.contact-alt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.contact-alt-card {
+  background: #fff;
+  border: 1px solid #fce4ec;
+  border-radius: 12px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.contact-alt-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(236,64,122,0.15);
+  border-color: #f48fb1;
+}
+.contact-alt-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+  color: #c2185b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  margin: 0 auto 10px;
+}
+.contact-alt-label {
+  font-size: 0.82em;
+  color: #ad1457;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+.contact-alt-value {
+  font-size: 0.92em;
+  font-weight: 600;
+  color: #880e4f;
+  margin-bottom: 10px;
+  word-break: break-all;
+}
+.contact-copy-btn,
+.contact-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fdf2f5;
+  color: #c2185b;
+  border: 1px solid #f8bbd0;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.82em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.contact-copy-btn:hover,
+.contact-link-btn:hover {
+  background: #ec407a;
+  color: #fff;
+  border-color: #ec407a;
+  text-decoration: none;
+}
+@media (max-width: 600px) {
+  .contact-form-wrap {
+    padding: 20px 16px;
+  }
+  .contact-alt-grid {
+    grid-template-columns: 1fr;
+  }
 }
