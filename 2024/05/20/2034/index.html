@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/NLP/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/NLP/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/NLP/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/NLP/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/NLP/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"wxl-1871.github.io","root":"/NLP/","images":"/NLP/images","scheme":"Gemini","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"stackoverflow-light","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/NLP/js/config.js" defer></script>
+
+    <meta name="description" content="线性回归是机器学习的&quot;Hello World&quot;，本文从公式推导到 Python 实现再到梯度下降，帮你一次性吃透。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性回归：从公式到梯度下降">
+<meta property="og:url" content="https://wxl-1871.github.io/NLP/2024/05/20/2034/index.html">
+<meta property="og:site_name" content="ML &amp; DL 笔记">
+<meta property="og:description" content="线性回归是机器学习的&quot;Hello World&quot;，本文从公式推导到 Python 实现再到梯度下降，帮你一次性吃透。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-20T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-30T00:52:42.360Z">
+<meta property="article:author" content="Your Name">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="梯度下降">
+<meta property="article:tag" content="线性回归">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://wxl-1871.github.io/NLP/2024/05/20/2034/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://wxl-1871.github.io/NLP/2024/05/20/2034/","path":"2024/05/20/2034/","title":"线性回归：从公式到梯度下降"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>线性回归：从公式到梯度下降 | ML & DL 笔记</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/NLP/js/utils.js" defer></script><script src="/NLP/js/motion.js" defer></script><script src="/NLP/js/sidebar.js" defer></script><script src="/NLP/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","display_overflow":"linebreak","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-mml-chtml.js","integrity":"sha256-ihPtDDm7pTmSF9ViEsItlvsrBTsNkz0MOXMchzOwCQw="}}</script>
+<script src="/NLP/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/NLP/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/NLP/atom.xml" title="ML & DL 笔记" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/NLP/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ML & DL 笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">机器学习 · 深度学习 · 大模型</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/NLP/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/NLP/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/NLP/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/NLP/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/NLP/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92"><span class="nav-number">1.</span> <span class="nav-text">一、什么是线性回归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">二、损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%B8%A4%E7%A7%8D%E6%B1%82%E8%A7%A3%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">三、两种求解方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E6%AD%A3%E8%A7%84%E6%96%B9%E7%A8%8B%EF%BC%88%E9%97%AD%E5%BC%8F%E8%A7%A3%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 正规方程（闭式解）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%EF%BC%88%E8%BF%AD%E4%BB%A3%E5%BC%8F%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 梯度下降（迭代式）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Python-%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">四、Python 实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%B8%B8%E8%A7%81%E5%9D%91"><span class="nav-number">5.</span> <span class="nav-text">五、常见坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">6.</span> <span class="nav-text">六、扩展阅读</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Your Name"
+      src="/NLP/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Your Name</p>
+  <div class="site-description" itemprop="description">记录机器学习、深度学习与大语言模型的学习笔记、实战与思考</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/NLP/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/NLP/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/NLP/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yourname@example.com" title="E-Mail → mailto:yourname@example.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wxl-1871.github.io/NLP/2024/05/20/2034/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/NLP/images/avatar.gif">
+      <meta itemprop="name" content="Your Name">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ML & DL 笔记">
+      <meta itemprop="description" content="记录机器学习、深度学习与大语言模型的学习笔记、实战与思考">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="线性回归：从公式到梯度下降 | ML & DL 笔记">
+      <meta itemprop="description" content="线性回归是机器学习的&quot;Hello World&quot;，本文从公式推导到 Python 实现再到梯度下降，帮你一次性吃透。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线性回归：从公式到梯度下降
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-20 10:00:00" itemprop="dateCreated datePublished" datetime="2024-05-20T10:00:00+08:00">2024-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-30 08:52:42" itemprop="dateModified" datetime="2026-08-30T08:52:42+08:00">2026-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/NLP/categories/machine-learning/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">线性回归是机器学习的"Hello World"，本文从公式推导到 Python 实现再到梯度下降，帮你一次性吃透。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="一、什么是线性回归"><a href="#一、什么是线性回归" class="headerlink" title="一、什么是线性回归"></a>一、什么是线性回归</h2><p>线性回归（Linear Regression）试图学到一个<strong>线性模型</strong>来预测实值输出：</p>
+<p><mjx-container class="MathJax" jax="SVG" overflow="overflow" display="true"><svg style="vertical-align: -0.464ex;" xmlns="http://www.w3.org/2000/svg" width="12.208ex" height="2.46ex" role="img" focusable="false" viewBox="0 -882.5 5396.1 1087.5"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="
+\hat{y} = w^\top x + b
+"><g data-mml-node="TeXAtom" data-latex="\hat{y}" data-mjx-texclass="ORD"><g data-mml-node="mover"><g data-mml-node="mi" data-latex="y"><path data-c="1D466" d="M163 442C118 442 83 417 58 367C39 328 29 301 29 286C29 277 34 272 45 272C59 272 60 278 64 293C87 372 119 412 160 412C173 412 180 403 180 385C180 369 175 346 164 317C126 214 107 145 107 108C107 32 154-13 231-13C264-13 295-1 323 23C288-109 233-175 158-175C124-175 101-164 89-142C129-140 149-121 149-85C149-60 136-47 109-47C72-47 50-78 50-115C50-170 100-205 158-205C273-205 367-99 392-1L486 377C489 388 490 396 490 401C490 421 479 431 458 431C442 431 429 423 420 408C414 387 409 369 406 354L342 97C332 61 279 16 234 16C196 16 177 41 177 92C177 134 194 198 227 284C240 319 247 343 247 357C247 406 212 442 163 442Z"></path></g><g data-mml-node="mo" transform="translate(304,32) translate(-250 0)"><path data-c="2C6" d="M386 515L403 533L250 694L97 533L114 515L250 618Z"></path></g></g></g><g data-mml-node="mo" data-latex="=" transform="translate(767.8,0)"><path data-c="3D" d="M698 367L80 367C64 367 56 359 56 344C56 329 64 321 80 321L698 321C714 321 722 329 722 344C722 356 711 367 698 367M698 179L80 179C64 179 56 171 56 156C56 141 64 133 80 133L698 133C714 133 722 141 722 156C722 169 711 179 698 179Z"></path></g><g data-mml-node="msup" data-latex="w^\top" transform="translate(1823.6,0)"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mi" transform="translate(749,413) scale(0.707)" data-latex="\top"><path data-c="22A4" d="M698 664L80 664C64 664 56 656 56 640C56 625 64 617 80 617L365 617L365 4C365-12 373-20 389-20C405-20 413-12 413 4L413 617L698 617C714 617 722 625 722 640C722 653 711 664 698 664Z"></path></g></g><g data-mml-node="mi" data-latex="x" transform="translate(3172.7,0)"><path data-c="1D465" d="M527 373C527 419 482 442 432 442C389 442 355 419 329 373C308 419 273 442 222 442C173 442 133 419 101 374C74 335 60 306 60 287C60 278 65 273 75 273C84 273 90 278 92 287C111 345 153 413 220 413C253 413 269 392 269 351C269 330 251 252 216 118C199 51 169 18 126 18C112 18 99 21 88 26C114 36 127 54 127 80C127 106 114 119 87 119C54 119 29 91 29 58C29 12 76-11 125-11C167-11 201 12 228 58C247 12 283-11 335-11C383-11 423 12 455 57C482 96 496 125 496 144C496 153 491 158 481 158C472 158 467 153 464 144C447 87 402 18 337 18C304 18 287 38 287 79C287 92 292 120 303 165L337 300C356 375 387 413 431 413C445 413 458 410 469 405C442 396 429 378 429 351C429 325 443 312 470 312C502 312 527 341 527 373Z"></path></g><g data-mml-node="mo" data-latex="+" transform="translate(3966.9,0)"><path data-c="2B" d="M698 274L413 274L413 559C413 575 405 583 389 583C373 583 365 575 365 559L365 274L80 274C64 274 56 266 56 250C56 234 64 226 80 226L365 226L365-59C365-75 373-83 389-83C405-83 413-75 413-59L413 226L698 226C714 226 722 234 722 250C722 263 711 274 698 274Z"></path></g><g data-mml-node="mi" data-latex="b" transform="translate(4967.1,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g></g></g></svg></mjx-container></p>
+<p>其中 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.62ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 716 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="w"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g></g></g></svg></mjx-container> 是权重向量，<mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.971ex" height="1.595ex" role="img" focusable="false" viewBox="0 -694 429 705"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="b"><g data-mml-node="mi" data-latex="b"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g></g></g></svg></mjx-container> 是偏置项。给定数据集 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="1.873ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 828 1000"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="D = {(x_i, y_i)}_{i=1}^{m}"><g data-mml-node="mi" data-latex="D"><path data-c="1D437" d="M567 683L235 683C212 683 201 682 201 660C201 649 212 644 234 644C254 644 294 647 294 631C294 629 293 623 290 613L158 82C153 60 143 47 128 42C121 40 103 39 72 39C50 39 40 37 40 16C40 5 51 0 72 0L399 0C467 0 532 20 595 61C702 130 804 265 804 429C804 577 713 683 567 683M710 466C710 353 659 216 607 149C550 76 475 39 381 39L270 39C259 39 252 39 248 40C242 40 239 42 239 45C239 47 241 54 244 67L379 610C388 643 387 644 429 644L535 644C647 644 710 578 710 466Z"></path></g></g></g></svg><mjx-break size="4"> </mjx-break><svg style="vertical-align: -0.659ex;" xmlns="http://www.w3.org/2000/svg" width="11.821ex" height="2.441ex" role="img" focusable="false" viewBox="0 -787.6 5225 1078.7"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="D = {(x_i, y_i)}_{i=1}^{m}"><g data-mml-node="mo" data-latex="="><path data-c="3D" d="M698 367L80 367C64 367 56 359 56 344C56 329 64 321 80 321L698 321C714 321 722 329 722 344C722 356 711 367 698 367M698 179L80 179C64 179 56 171 56 156C56 141 64 133 80 133L698 133C714 133 722 141 722 156C722 169 711 179 698 179Z"></path></g><g data-mml-node="msubsup" data-latex="{(x_i,y_i)}_{i=1}^{m}" transform="translate(1055.8,0)"><g data-mml-node="TeXAtom" data-latex="{(x_i,y_i)}" data-mjx-texclass="ORD"><g data-mml-node="mo" data-latex="("><path data-c="28" d="M318-248C327-248 332-243 332-234C332-231 330-227 327-223C275-183 233-117 202-26C175 53 161 131 161 208L161 292C161 369 175 447 202 526C233 617 275 683 327 723C330 726 332 730 332 734C332 743 327 748 318 748C317 748 314 747 311 745C251 699 201 631 160 540C121 453 101 371 101 292L101 208C101 129 121 47 160-40C201-131 251-199 311-245C314-247 317-248 318-248Z"></path></g><g data-mml-node="msub" data-latex="x_i" transform="translate(389,0)"><g data-mml-node="mi" data-latex="x"><path data-c="1D465" d="M527 373C527 419 482 442 432 442C389 442 355 419 329 373C308 419 273 442 222 442C173 442 133 419 101 374C74 335 60 306 60 287C60 278 65 273 75 273C84 273 90 278 92 287C111 345 153 413 220 413C253 413 269 392 269 351C269 330 251 252 216 118C199 51 169 18 126 18C112 18 99 21 88 26C114 36 127 54 127 80C127 106 114 119 87 119C54 119 29 91 29 58C29 12 76-11 125-11C167-11 201 12 228 58C247 12 283-11 335-11C383-11 423 12 455 57C482 96 496 125 496 144C496 153 491 158 481 158C472 158 467 153 464 144C447 87 402 18 337 18C304 18 287 38 287 79C287 92 292 120 303 165L337 300C356 375 387 413 431 413C445 413 458 410 469 405C442 396 429 378 429 351C429 325 443 312 470 312C502 312 527 341 527 373Z"></path></g><g data-mml-node="mi" transform="translate(605,-150) scale(0.707)" data-latex="i"><path data-c="1D456" d="M284 621C284 648 271 661 244 661C216 661 188 633 188 605C188 578 202 565 229 565C257 565 284 593 284 621M259 138C237 59 205 19 164 19C151 19 144 28 144 47C144 64 173 150 232 306C240 329 244 347 244 360C244 409 210 445 161 445C118 445 84 420 59 369C39 328 29 301 29 288C29 279 34 275 45 275C58 275 60 281 64 295C87 375 118 415 158 415C171 415 178 406 178 387C178 373 175 357 168 338C145 275 121 208 101 155C86 115 78 88 78 74C78 25 114-11 162-11C205-11 239 14 264 64C283 103 293 130 293 145C293 154 288 159 277 159C274 159 259 150 259 138Z"></path></g></g><g data-mml-node="mo" data-latex="," transform="translate(1288,0)"><path data-c="2C" d="M139 106C107 106 86 82 86 50C86 20 109-5 139-5C153-5 165-1 174 8L175 0C175-63 154-117 112-160C105-168 101-174 101-178C101-188 105-193 114-193C123-193 135-181 152-158C186-110 203-57 203 0C203 53 185 106 139 106Z"></path></g><g data-mml-node="msub" data-latex="y_i" transform="translate(1732.6,0)"><g data-mml-node="mi" data-latex="y"><path data-c="1D466" d="M163 442C118 442 83 417 58 367C39 328 29 301 29 286C29 277 34 272 45 272C59 272 60 278 64 293C87 372 119 412 160 412C173 412 180 403 180 385C180 369 175 346 164 317C126 214 107 145 107 108C107 32 154-13 231-13C264-13 295-1 323 23C288-109 233-175 158-175C124-175 101-164 89-142C129-140 149-121 149-85C149-60 136-47 109-47C72-47 50-78 50-115C50-170 100-205 158-205C273-205 367-99 392-1L486 377C489 388 490 396 490 401C490 421 479 431 458 431C442 431 429 423 420 408C414 387 409 369 406 354L342 97C332 61 279 16 234 16C196 16 177 41 177 92C177 134 194 198 227 284C240 319 247 343 247 357C247 406 212 442 163 442Z"></path></g><g data-mml-node="mi" transform="translate(523,-150) scale(0.707)" data-latex="i"><path data-c="1D456" d="M284 621C284 648 271 661 244 661C216 661 188 633 188 605C188 578 202 565 229 565C257 565 284 593 284 621M259 138C237 59 205 19 164 19C151 19 144 28 144 47C144 64 173 150 232 306C240 329 244 347 244 360C244 409 210 445 161 445C118 445 84 420 59 369C39 328 29 301 29 288C29 279 34 275 45 275C58 275 60 281 64 295C87 375 118 415 158 415C171 415 178 406 178 387C178 373 175 357 168 338C145 275 121 208 101 155C86 115 78 88 78 74C78 25 114-11 162-11C205-11 239 14 264 64C283 103 293 130 293 145C293 154 288 159 277 159C274 159 259 150 259 138Z"></path></g></g><g data-mml-node="mo" data-latex=")" transform="translate(2549.6,0)"><path data-c="29" d="M78-245C138-199 188-131 229-40C268 47 288 129 288 208L288 292C288 371 268 453 229 540C188 631 138 699 78 745C75 747 72 748 71 748C62 748 57 743 57 734C57 730 59 726 62 723C114 683 156 617 187 526C214 447 228 369 228 292L228 208C228 131 214 53 187-26C156-117 114-183 62-223C59-227 57-231 57-234C57-243 62-248 71-248C72-248 75-247 78-245Z"></path></g></g><g data-mml-node="TeXAtom" transform="translate(2971.6,475.1) scale(0.707)" data-latex="{m}" data-mjx-texclass="ORD"><g data-mml-node="mi" data-latex="m"><path data-c="1D45A" d="M657 442C596 442 543 412 498 353C489 412 451 442 383 442C324 442 273 416 231 363C223 407 188 442 137 442C96 442 66 409 45 344C34 312 29 293 29 287C29 278 34 273 45 273C50 273 53 274 56 276C61 285 64 292 66 299C84 375 107 413 134 413C152 413 161 399 161 371C161 358 156 331 145 290L88 63C84 51 79 25 79 19C79-1 90-11 111-11C131-11 145-1 152 19C153 24 160 49 171 92L192 181L222 295C233 318 250 341 272 365C301 397 337 413 380 413C413 413 429 391 429 348C429 335 424 308 414 267L387 153C380 124 364 64 356 32C355 25 354 21 354 19C354-1 365-11 387-11C398-11 406-8 413-1C428 14 429 21 435 48L494 285C497 298 511 321 535 353C565 393 605 413 654 413C687 413 703 391 703 348C703 309 683 236 642 129C633 106 629 87 629 74C629 25 666-11 714-11C759-11 793 14 818 64C838 104 848 131 848 144C848 153 843 158 832 158C825 157 818 148 813 137C791 58 759 18 716 18C703 18 696 28 696 47C696 62 702 84 714 115C755 222 775 295 775 333C775 404 728 442 657 442Z"></path></g></g><g data-mml-node="TeXAtom" transform="translate(2971.6,-283.4) scale(0.707)" data-latex="{i=1}" data-mjx-texclass="ORD"><g data-mml-node="mi" data-latex="i"><path data-c="1D456" d="M284 621C284 648 271 661 244 661C216 661 188 633 188 605C188 578 202 565 229 565C257 565 284 593 284 621M259 138C237 59 205 19 164 19C151 19 144 28 144 47C144 64 173 150 232 306C240 329 244 347 244 360C244 409 210 445 161 445C118 445 84 420 59 369C39 328 29 301 29 288C29 279 34 275 45 275C58 275 60 281 64 295C87 375 118 415 158 415C171 415 178 406 178 387C178 373 175 357 168 338C145 275 121 208 101 155C86 115 78 88 78 74C78 25 114-11 162-11C205-11 239 14 264 64C283 103 293 130 293 145C293 154 288 159 277 159C274 159 259 150 259 138Z"></path></g><g data-mml-node="mo" data-latex="=" transform="translate(345,0)"><path data-c="3D" d="M698 367L80 367C64 367 56 359 56 344C56 329 64 321 80 321L698 321C714 321 722 329 722 344C722 356 711 367 698 367M698 179L80 179C64 179 56 171 56 156C56 141 64 133 80 133L698 133C714 133 722 141 722 156C722 169 711 179 698 179Z"></path></g><g data-mml-node="mn" data-latex="1" transform="translate(1123,0)"><path data-c="31" d="M269 666C228 624 168 603 89 603L89 564C141 564 184 572 217 588L217 82C217 64 213 52 204 47C195 42 170 39 130 39L95 39L95 0C120 2 174 3 257 3C340 3 394 2 419 0L419 39L384 39C343 39 318 42 310 47C302 52 297 64 297 82L297 636C297 660 295 666 269 666Z"></path></g></g></g></g></g></svg></mjx-container>，我们希望找到最优的 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.437ex;" xmlns="http://www.w3.org/2000/svg" width="3.597ex" height="2.007ex" role="img" focusable="false" viewBox="0 -694 1589.7 887"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="w, b"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mo" data-latex="," transform="translate(716,0)"><path data-c="2C" d="M139 106C107 106 86 82 86 50C86 20 109-5 139-5C153-5 165-1 174 8L175 0C175-63 154-117 112-160C105-168 101-174 101-178C101-188 105-193 114-193C123-193 135-181 152-158C186-110 203-57 203 0C203 53 185 106 139 106Z"></path></g><g data-mml-node="mi" data-latex="b" transform="translate(1160.7,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g></g></g></svg></mjx-container>。</p>
+<h2 id="二、损失函数"><a href="#二、损失函数" class="headerlink" title="二、损失函数"></a>二、损失函数</h2><p>最常用的损失函数是<strong>均方误差（MSE）</strong>：</p>
+<p>$$<br>L(w, b) = \frac{1}{m} \sum_{i=1}^{m} \left( \hat{y}<em>i - y_i \right)^2<br>       = \frac{1}{m} \sum</em>{i=1}^{m} \left( w^\top x_i + b - y_i \right)^2<br>$$</p>
+<p>目标：<mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -2.023ex;" xmlns="http://www.w3.org/2000/svg" width="11.046ex" height="3.715ex" role="img" focusable="false" viewBox="0 -748 4882.3 1642.2"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="\displaystyle \min_{w, b} L(w, b)"><g data-mml-node="mstyle" data-latex="\displaystyle \min_{w, b} L(w, b)"><g data-mml-node="munder" data-latex="\min_{w,b}"><g data-mml-node="mo" data-latex="\min"><path data-c="6D" d="M315 413C361 413 384 378 384 307L384 79C384 60 381 48 374 44C367 40 344 38 307 38L307 0L423 3L538 0L538 38C501 38 479 40 472 44C465 48 461 60 461 79L461 259C461 339 513 413 590 413C637 413 660 378 660 307L660 79C660 60 656 48 649 44C642 40 619 38 582 38L582 0L698 3L813 0L813 38C781 38 760 39 750 42C740 45 736 52 736 64L736 251C736 298 734 331 731 350C721 411 676 442 597 442C534 442 487 413 455 354C441 413 397 442 322 442C259 442 211 412 179 352L179 442L32 431L32 393C68 393 90 390 98 384C106 378 109 365 109 342L109 79C109 60 105 48 98 44C91 40 69 38 32 38L32 0L148 3L263 0L263 38C226 38 203 40 196 44C189 48 185 60 185 79L185 259C185 340 238 413 315 413Z"></path><path data-c="69" d="M194 601C194 631 169 657 139 657C109 657 83 631 83 601C83 571 108 544 138 544C169 544 194 570 194 601M143 3L247 0L247 39C214 39 194 41 188 45C182 49 180 60 180 78L180 445L37 433L37 395C70 395 91 392 98 387C105 382 108 368 108 345L108 79C108 60 105 48 98 44C91 40 69 39 33 39L33 0Z" transform="translate(833,0)"></path><path data-c="6E" d="M314 413C359 413 382 378 382 307L382 79C382 60 379 48 372 44C365 40 343 38 306 38L306 0L421 3L535 0L535 38C503 38 482 39 472 42C462 45 458 52 458 64L458 251C458 298 457 331 454 350C444 411 399 442 320 442C257 442 210 412 179 352L179 442L32 431L32 393C68 393 90 390 98 384C106 378 109 365 109 342L109 79C109 60 105 48 98 44C91 40 69 38 32 38L32 0L147 3L261 0L261 38C224 38 203 40 196 44C189 48 185 60 185 79L185 259C185 340 236 413 314 413Z" transform="translate(1111,0)"></path></g><g data-mml-node="TeXAtom" transform="translate(330.4,-657.7) scale(0.707)" data-latex="{w,b}" data-mjx-texclass="ORD"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mo" data-latex="," transform="translate(716,0)"><path data-c="2C" d="M139 106C107 106 86 82 86 50C86 20 109-5 139-5C153-5 165-1 174 8L175 0C175-63 154-117 112-160C105-168 101-174 101-178C101-188 105-193 114-193C123-193 135-181 152-158C186-110 203-57 203 0C203 53 185 106 139 106Z"></path></g><g data-mml-node="mi" data-latex="b" transform="translate(994,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g></g></g><g data-mml-node="mi" data-latex="L" transform="translate(1833.7,0)"><path data-c="1D43F" d="M520 667C520 678 513 683 500 683L354 680L223 683C208 684 200 676 200 659C200 652 203 647 209 646C218 645 226 644 231 644C262 643 279 641 284 640C289 639 292 636 292 631C292 629 291 623 288 613L156 82C150 60 140 47 125 42C119 40 101 39 70 39C49 39 39 31 39 15C39 5 49 0 70 0L527 0C552 0 554 0 561 19L639 233C642 240 643 245 643 248C643 258 638 263 627 263C617 263 612 254 607 240C588 191 570 154 555 131C518 75 455 39 363 39L270 39C259 39 252 39 249 40C242 40 239 42 239 45C239 47 241 54 244 67L377 601C383 624 396 637 415 642C421 643 442 644 478 644C506 644 520 644 520 667Z"></path></g><g data-mml-node="mo" data-latex="(" transform="translate(2514.7,0)"><path data-c="28" d="M318-248C327-248 332-243 332-234C332-231 330-227 327-223C275-183 233-117 202-26C175 53 161 131 161 208L161 292C161 369 175 447 202 526C233 617 275 683 327 723C330 726 332 730 332 734C332 743 327 748 318 748C317 748 314 747 311 745C251 699 201 631 160 540C121 453 101 371 101 292L101 208C101 129 121 47 160-40C201-131 251-199 311-245C314-247 317-248 318-248Z"></path></g><g data-mml-node="mi" data-latex="w" transform="translate(2903.7,0)"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mo" data-latex="," transform="translate(3619.7,0)"><path data-c="2C" d="M139 106C107 106 86 82 86 50C86 20 109-5 139-5C153-5 165-1 174 8L175 0C175-63 154-117 112-160C105-168 101-174 101-178C101-188 105-193 114-193C123-193 135-181 152-158C186-110 203-57 203 0C203 53 185 106 139 106Z"></path></g><g data-mml-node="mi" data-latex="b" transform="translate(4064.3,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g><g data-mml-node="mo" data-latex=")" transform="translate(4493.3,0)"><path data-c="29" d="M78-245C138-199 188-131 229-40C268 47 288 129 288 208L288 292C288 371 268 453 229 540C188 631 138 699 78 745C75 747 72 748 71 748C62 748 57 743 57 734C57 730 59 726 62 723C114 683 156 617 187 526C214 447 228 369 228 292L228 208C228 131 214 53 187-26C156-117 114-183 62-223C59-227 57-231 57-234C57-243 62-248 71-248C72-248 75-247 78-245Z"></path></g></g></g></g></svg></mjx-container>。</p>
+<h2 id="三、两种求解方式"><a href="#三、两种求解方式" class="headerlink" title="三、两种求解方式"></a>三、两种求解方式</h2><h3 id="3-1-正规方程（闭式解）"><a href="#3-1-正规方程（闭式解）" class="headerlink" title="3.1 正规方程（闭式解）"></a>3.1 正规方程（闭式解）</h3><p>对 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.437ex;" xmlns="http://www.w3.org/2000/svg" width="3.597ex" height="2.007ex" role="img" focusable="false" viewBox="0 -694 1589.7 887"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="w, b"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mo" data-latex="," transform="translate(716,0)"><path data-c="2C" d="M139 106C107 106 86 82 86 50C86 20 109-5 139-5C153-5 165-1 174 8L175 0C175-63 154-117 112-160C105-168 101-174 101-178C101-188 105-193 114-193C123-193 135-181 152-158C186-110 203-57 203 0C203 53 185 106 139 106Z"></path></g><g data-mml-node="mi" data-latex="b" transform="translate(1160.7,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g></g></g></svg></mjx-container> 求偏导并令其为零，可得解析解（把 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.971ex" height="1.595ex" role="img" focusable="false" viewBox="0 -694 429 705"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="b"><g data-mml-node="mi" data-latex="b"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g></g></g></svg></mjx-container> 吸收进 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.62ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 716 453"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="w"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g></g></g></svg></mjx-container> 后）：</p>
+<p><mjx-container class="MathJax" jax="SVG" overflow="overflow" display="true"><svg style="vertical-align: -0.561ex;" xmlns="http://www.w3.org/2000/svg" width="19.598ex" height="2.561ex" role="img" focusable="false" viewBox="0 -883.9 8662.3 1131.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="
+w^* = (X^\top X)^{-1} X^\top y
+"><g data-mml-node="msup" data-latex="w^*"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mo" transform="translate(749,413) scale(0.707)" data-latex="*"><path data-c="2217" d="M404 372C397 372 390 370 385 366L267 279L282 425C285 445 269 462 250 462C231 462 215 445 218 425L233 279L115 366C110 370 103 372 96 372C78 372 63 357 63 339C63 325 70 315 83 309L217 250L83 191C70 185 63 175 63 161C63 143 78 128 96 128C103 128 110 130 115 134L233 221L218 75C215 55 231 39 250 39C269 39 285 55 282 75L267 221L385 134C390 130 397 128 404 128C415 128 424 133 431 142C446 162 435 183 417 191L283 250L417 309C430 315 437 325 437 339C437 357 422 372 404 372Z"></path></g></g><g data-mml-node="mo" data-latex="=" transform="translate(1430.3,0)"><path data-c="3D" d="M698 367L80 367C64 367 56 359 56 344C56 329 64 321 80 321L698 321C714 321 722 329 722 344C722 356 711 367 698 367M698 179L80 179C64 179 56 171 56 156C56 141 64 133 80 133L698 133C714 133 722 141 722 156C722 169 711 179 698 179Z"></path></g><g data-mml-node="mo" data-latex="(" transform="translate(2486.1,0)"><path data-c="28" d="M318-248C327-248 332-243 332-234C332-231 330-227 327-223C275-183 233-117 202-26C175 53 161 131 161 208L161 292C161 369 175 447 202 526C233 617 275 683 327 723C330 726 332 730 332 734C332 743 327 748 318 748C317 748 314 747 311 745C251 699 201 631 160 540C121 453 101 371 101 292L101 208C101 129 121 47 160-40C201-131 251-199 311-245C314-247 317-248 318-248Z"></path></g><g data-mml-node="msup" data-latex="X^\top" transform="translate(2875.1,0)"><g data-mml-node="mi" data-latex="X"><path data-c="1D44B" d="M834 683C817 683 758 680 741 680C721 680 651 683 631 683C616 683 608 675 608 659C608 650 613 645 624 644C648 641 660 633 660 618C660 609 654 598 642 585L486 417C457 485 429 552 400 620C401 622 402 624 405 626C414 636 431 642 455 644C471 646 479 654 479 667C479 678 473 683 460 683C436 683 359 680 335 680C314 680 245 683 224 683C209 683 202 675 202 659C202 649 211 644 229 644C274 644 288 644 300 615L416 342L208 119C205 116 201 112 196 109C155 66 108 42 53 39C36 38 27 29 27 14C30 5 31 0 44 0C61 0 120 3 137 3C158 3 227 0 248 0C263 0 270 8 270 24C270 33 265 38 254 39C230 41 218 50 218 65C218 75 227 89 244 107C306 173 369 239 430 306C464 225 499 145 532 63C531 61 530 59 527 56C518 47 502 42 478 39C463 37 455 29 455 16C455 5 461 0 474 0L599 3C620 3 690 0 708 0C723 0 731 8 731 23C731 33 724 38 709 39C678 39 658 40 651 44C644 48 636 60 628 80L501 383C569 455 620 509 653 546C677 571 693 588 702 595C739 626 780 642 825 644C846 645 851 650 851 669C848 678 847 683 834 683Z"></path></g><g data-mml-node="mi" transform="translate(935.2,413) scale(0.707)" data-latex="\top"><path data-c="22A4" d="M698 664L80 664C64 664 56 656 56 640C56 625 64 617 80 617L365 617L365 4C365-12 373-20 389-20C405-20 413-12 413 4L413 617L698 617C714 617 722 625 722 640C722 653 711 664 698 664Z"></path></g></g><g data-mml-node="mi" data-latex="X" transform="translate(4410.4,0)"><path data-c="1D44B" d="M834 683C817 683 758 680 741 680C721 680 651 683 631 683C616 683 608 675 608 659C608 650 613 645 624 644C648 641 660 633 660 618C660 609 654 598 642 585L486 417C457 485 429 552 400 620C401 622 402 624 405 626C414 636 431 642 455 644C471 646 479 654 479 667C479 678 473 683 460 683C436 683 359 680 335 680C314 680 245 683 224 683C209 683 202 675 202 659C202 649 211 644 229 644C274 644 288 644 300 615L416 342L208 119C205 116 201 112 196 109C155 66 108 42 53 39C36 38 27 29 27 14C30 5 31 0 44 0C61 0 120 3 137 3C158 3 227 0 248 0C263 0 270 8 270 24C270 33 265 38 254 39C230 41 218 50 218 65C218 75 227 89 244 107C306 173 369 239 430 306C464 225 499 145 532 63C531 61 530 59 527 56C518 47 502 42 478 39C463 37 455 29 455 16C455 5 461 0 474 0L599 3C620 3 690 0 708 0C723 0 731 8 731 23C731 33 724 38 709 39C678 39 658 40 651 44C644 48 636 60 628 80L501 383C569 455 620 509 653 546C677 571 693 588 702 595C739 626 780 642 825 644C846 645 851 650 851 669C848 678 847 683 834 683Z"></path></g><g data-mml-node="msup" data-latex=")^{-1}" transform="translate(5261.4,0)"><g data-mml-node="mo" data-latex=")"><path data-c="29" d="M78-245C138-199 188-131 229-40C268 47 288 129 288 208L288 292C288 371 268 453 229 540C188 631 138 699 78 745C75 747 72 748 71 748C62 748 57 743 57 734C57 730 59 726 62 723C114 683 156 617 187 526C214 447 228 369 228 292L228 208C228 131 214 53 187-26C156-117 114-183 62-223C59-227 57-231 57-234C57-243 62-248 71-248C72-248 75-247 78-245Z"></path></g><g data-mml-node="TeXAtom" transform="translate(422,413) scale(0.707)" data-latex="{-1}" data-mjx-texclass="ORD"><g data-mml-node="mo" data-latex="-"><path data-c="2212" d="M698 270L80 270C64 270 56 263 56 250C56 237 64 230 80 230L698 230C714 230 722 237 722 250C722 262 710 270 698 270Z"></path></g><g data-mml-node="mn" data-latex="1" transform="translate(778,0)"><path data-c="31" d="M269 666C228 624 168 603 89 603L89 564C141 564 184 572 217 588L217 82C217 64 213 52 204 47C195 42 170 39 130 39L95 39L95 0C120 2 174 3 257 3C340 3 394 2 419 0L419 39L384 39C343 39 318 42 310 47C302 52 297 64 297 82L297 636C297 660 295 666 269 666Z"></path></g></g></g><g data-mml-node="msup" data-latex="X^\top" transform="translate(6637.1,0)"><g data-mml-node="mi" data-latex="X"><path data-c="1D44B" d="M834 683C817 683 758 680 741 680C721 680 651 683 631 683C616 683 608 675 608 659C608 650 613 645 624 644C648 641 660 633 660 618C660 609 654 598 642 585L486 417C457 485 429 552 400 620C401 622 402 624 405 626C414 636 431 642 455 644C471 646 479 654 479 667C479 678 473 683 460 683C436 683 359 680 335 680C314 680 245 683 224 683C209 683 202 675 202 659C202 649 211 644 229 644C274 644 288 644 300 615L416 342L208 119C205 116 201 112 196 109C155 66 108 42 53 39C36 38 27 29 27 14C30 5 31 0 44 0C61 0 120 3 137 3C158 3 227 0 248 0C263 0 270 8 270 24C270 33 265 38 254 39C230 41 218 50 218 65C218 75 227 89 244 107C306 173 369 239 430 306C464 225 499 145 532 63C531 61 530 59 527 56C518 47 502 42 478 39C463 37 455 29 455 16C455 5 461 0 474 0L599 3C620 3 690 0 708 0C723 0 731 8 731 23C731 33 724 38 709 39C678 39 658 40 651 44C644 48 636 60 628 80L501 383C569 455 620 509 653 546C677 571 693 588 702 595C739 626 780 642 825 644C846 645 851 650 851 669C848 678 847 683 834 683Z"></path></g><g data-mml-node="mi" transform="translate(935.2,413) scale(0.707)" data-latex="\top"><path data-c="22A4" d="M698 664L80 664C64 664 56 656 56 640C56 625 64 617 80 617L365 617L365 4C365-12 373-20 389-20C405-20 413-12 413 4L413 617L698 617C714 617 722 625 722 640C722 653 711 664 698 664Z"></path></g></g><g data-mml-node="mi" data-latex="y" transform="translate(8172.3,0)"><path data-c="1D466" d="M163 442C118 442 83 417 58 367C39 328 29 301 29 286C29 277 34 272 45 272C59 272 60 278 64 293C87 372 119 412 160 412C173 412 180 403 180 385C180 369 175 346 164 317C126 214 107 145 107 108C107 32 154-13 231-13C264-13 295-1 323 23C288-109 233-175 158-175C124-175 101-164 89-142C129-140 149-121 149-85C149-60 136-47 109-47C72-47 50-78 50-115C50-170 100-205 158-205C273-205 367-99 392-1L486 377C489 388 490 396 490 401C490 421 479 431 458 431C442 431 429 423 420 408C414 387 409 369 406 354L342 97C332 61 279 16 234 16C196 16 177 41 177 92C177 134 194 198 227 284C240 319 247 343 247 357C247 406 212 442 163 442Z"></path></g></g></g></svg></mjx-container></p>
+<ul>
+<li>✅ 优点：一步到位，无需调参</li>
+<li>❌ 缺点：<mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="5.399ex" height="1.884ex" role="img" focusable="false" viewBox="0 -832.5 2386.3 832.5"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="X^\top X"><g data-mml-node="msup" data-latex="X^\top"><g data-mml-node="mi" data-latex="X"><path data-c="1D44B" d="M834 683C817 683 758 680 741 680C721 680 651 683 631 683C616 683 608 675 608 659C608 650 613 645 624 644C648 641 660 633 660 618C660 609 654 598 642 585L486 417C457 485 429 552 400 620C401 622 402 624 405 626C414 636 431 642 455 644C471 646 479 654 479 667C479 678 473 683 460 683C436 683 359 680 335 680C314 680 245 683 224 683C209 683 202 675 202 659C202 649 211 644 229 644C274 644 288 644 300 615L416 342L208 119C205 116 201 112 196 109C155 66 108 42 53 39C36 38 27 29 27 14C30 5 31 0 44 0C61 0 120 3 137 3C158 3 227 0 248 0C263 0 270 8 270 24C270 33 265 38 254 39C230 41 218 50 218 65C218 75 227 89 244 107C306 173 369 239 430 306C464 225 499 145 532 63C531 61 530 59 527 56C518 47 502 42 478 39C463 37 455 29 455 16C455 5 461 0 474 0L599 3C620 3 690 0 708 0C723 0 731 8 731 23C731 33 724 38 709 39C678 39 658 40 651 44C644 48 636 60 628 80L501 383C569 455 620 509 653 546C677 571 693 588 702 595C739 626 780 642 825 644C846 645 851 650 851 669C848 678 847 683 834 683Z"></path></g><g data-mml-node="mi" transform="translate(935.2,363) scale(0.707)" data-latex="\top"><path data-c="22A4" d="M698 664L80 664C64 664 56 656 56 640C56 625 64 617 80 617L365 617L365 4C365-12 373-20 389-20C405-20 413-12 413 4L413 617L698 617C714 617 722 625 722 640C722 653 711 664 698 664Z"></path></g></g><g data-mml-node="mi" data-latex="X" transform="translate(1535.3,0)"><path data-c="1D44B" d="M834 683C817 683 758 680 741 680C721 680 651 683 631 683C616 683 608 675 608 659C608 650 613 645 624 644C648 641 660 633 660 618C660 609 654 598 642 585L486 417C457 485 429 552 400 620C401 622 402 624 405 626C414 636 431 642 455 644C471 646 479 654 479 667C479 678 473 683 460 683C436 683 359 680 335 680C314 680 245 683 224 683C209 683 202 675 202 659C202 649 211 644 229 644C274 644 288 644 300 615L416 342L208 119C205 116 201 112 196 109C155 66 108 42 53 39C36 38 27 29 27 14C30 5 31 0 44 0C61 0 120 3 137 3C158 3 227 0 248 0C263 0 270 8 270 24C270 33 265 38 254 39C230 41 218 50 218 65C218 75 227 89 244 107C306 173 369 239 430 306C464 225 499 145 532 63C531 61 530 59 527 56C518 47 502 42 478 39C463 37 455 29 455 16C455 5 461 0 474 0L599 3C620 3 690 0 708 0C723 0 731 8 731 23C731 33 724 38 709 39C678 39 658 40 651 44C644 48 636 60 628 80L501 383C569 455 620 509 653 546C677 571 693 588 702 595C739 626 780 642 825 644C846 645 851 650 851 669C848 678 847 683 834 683Z"></path></g></g></g></svg></mjx-container> 求逆复杂度 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.561ex;" xmlns="http://www.w3.org/2000/svg" width="5.832ex" height="2.448ex" role="img" focusable="false" viewBox="0 -833.9 2577.6 1081.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="O(n^3)"><g data-mml-node="mi" data-latex="O"><path data-c="1D442" d="M702 263C727 320 740 377 740 435C740 513 717 577 670 628C623 679 561 705 484 705C431 705 378 692 325 666C217 613 138 529 87 415C62 359 49 303 49 246C49 167 72 103 119 53C166 3 228-22 306-22C358-22 410-9 463 16C572 69 651 152 702 263M644 474C644 341 584 208 520 129C476 74 400 12 312 12C205 12 149 105 149 218C149 253 156 300 169 357C196 475 264 579 353 633C396 659 438 672 478 672C586 672 644 586 644 474Z"></path></g><g data-mml-node="mo" data-latex="(" transform="translate(763,0)"><path data-c="28" d="M318-248C327-248 332-243 332-234C332-231 330-227 327-223C275-183 233-117 202-26C175 53 161 131 161 208L161 292C161 369 175 447 202 526C233 617 275 683 327 723C330 726 332 730 332 734C332 743 327 748 318 748C317 748 314 747 311 745C251 699 201 631 160 540C121 453 101 371 101 292L101 208C101 129 121 47 160-40C201-131 251-199 311-245C314-247 317-248 318-248Z"></path></g><g data-mml-node="msup" data-latex="n^3" transform="translate(1152,0)"><g data-mml-node="mi" data-latex="n"><path data-c="1D45B" d="M537 137C514 58 481 18 440 18C427 18 420 28 420 47C420 61 426 84 438 115C478 224 498 296 498 333C498 403 451 442 381 442C322 442 271 416 230 363C222 407 187 442 136 442C80 442 58 390 44 345C34 313 29 294 29 287C29 278 34 273 45 273C50 273 53 274 56 276C61 285 64 292 65 299C83 375 106 413 133 413C151 413 160 399 160 371C160 358 155 331 144 290L87 63C84 50 78 24 78 19C78-1 89-11 111-11C130-11 144-1 151 19C153 24 159 49 170 92L191 181L221 295C232 318 249 341 270 365C299 397 335 413 378 413C411 413 427 391 427 348C427 310 406 234 363 120C356 102 353 87 353 74C353 25 390-11 438-11C482-11 517 14 542 64C561 104 571 131 571 144C571 153 566 158 555 158C552 158 537 149 537 137Z"></path></g><g data-mml-node="mn" transform="translate(633,363) scale(0.707)" data-latex="3"><path data-c="33" d="M303 353C369 378 431 441 431 526C431 569 410 604 369 631C333 654 292 666 246 666C201 666 162 654 127 631C88 605 68 571 68 528C68 495 90 472 122 472C154 472 176 495 176 527C176 560 157 578 119 580C145 615 186 633 242 633C302 633 332 598 332 527C332 485 324 450 309 421C282 373 245 364 183 364C171 362 165 357 165 348C165 333 172 333 192 333L235 333C310 333 348 280 348 173C348 88 317 14 241 14C176 14 128 36 99 80C134 79 160 105 160 139C160 173 135 198 101 198C62 198 42 178 42 137C42 88 64 49 108 18C147-9 193-22 244-22C301-22 350-3 393 34C436 71 457 117 457 173C457 267 383 332 303 353Z"></path></g></g><g data-mml-node="mo" data-latex=")" transform="translate(2188.6,0)"><path data-c="29" d="M78-245C138-199 188-131 229-40C268 47 288 129 288 208L288 292C288 371 268 453 229 540C188 631 138 699 78 745C75 747 72 748 71 748C62 748 57 743 57 734C57 730 59 726 62 723C114 683 156 617 187 526C214 447 228 369 228 292L228 208C228 131 214 53 187-26C156-117 114-183 62-223C59-227 57-231 57-234C57-243 62-248 71-248C72-248 75-247 78-245Z"></path></g></g></g></svg></mjx-container>，特征多时不可接受</li>
+</ul>
+<h3 id="3-2-梯度下降（迭代式）"><a href="#3-2-梯度下降（迭代式）" class="headerlink" title="3.2 梯度下降（迭代式）"></a>3.2 梯度下降（迭代式）</h3><p>参数沿负梯度方向更新：</p>
+<p><mjx-container class="MathJax" jax="SVG" overflow="overflow" display="true"><svg style="vertical-align: -1.602ex;" xmlns="http://www.w3.org/2000/svg" width="30.981ex" height="4.751ex" role="img" focusable="false" viewBox="0 -1392 13693.7 2100"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="
+w \leftarrow w - \eta \frac{\partial L}{\partial w}, \quad
+b \leftarrow b - \eta \frac{\partial L}{\partial b}
+"><g data-mml-node="mi" data-latex="w"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mo" data-latex="\leftarrow" transform="translate(993.8,0)"><path data-c="2190" d="M918 274L172 274C245 326 289 395 306 482L306 483L307 485C307 502 299 510 283 510C270 510 262 504 259 491C250 444 231 403 203 368C161 316 116 282 68 266C61 263 57 257 57 250C57 243 61 237 68 234C116 218 161 184 203 132C231 97 250 56 259 9C262-4 270-10 283-10C299-10 307-2 307 15L306 17L306 18C289 105 245 174 172 226L918 226C934 226 942 234 942 250C942 263 931 274 918 274Z"></path></g><g data-mml-node="mi" data-latex="w" transform="translate(2271.6,0)"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g><g data-mml-node="mo" data-latex="-" transform="translate(3209.8,0)"><path data-c="2212" d="M698 270L80 270C64 270 56 263 56 250C56 237 64 230 80 230L698 230C714 230 722 237 722 250C722 262 710 270 698 270Z"></path></g><g data-mml-node="mi" data-latex="\eta" transform="translate(4210,0)"><path data-c="1D702" d="M379 442C318 442 268 415 229 362C222 407 187 442 136 442C95 442 65 409 44 344C34 311 29 292 29 286C29 277 34 272 45 272C50 272 53 273 56 275C61 284 64 291 65 298C83 374 106 412 133 412C151 412 160 398 160 371C160 358 155 330 144 289L87 61C84 48 78 22 78 17C78-3 89-13 111-13C130-13 144-3 151 17C152 22 158 47 169 90L191 179C203 228 212 265 219 290C222 297 230 311 243 331C279 385 323 412 376 412C409 412 425 390 425 347C425 332 422 312 415 286L303-169C301-177 300-182 300-185C300-206 311-216 332-216C354-216 369-202 376-173L488 274C493 295 496 315 496 332C496 404 451 442 379 442Z"></path></g><g data-mml-node="mfrac" data-latex="\frac{\partial L}{\partial w}" transform="translate(4707,0)"><g data-mml-node="mrow" data-latex="\partial L" transform="translate(237.5,676)"><g data-mml-node="mi" data-latex="\partial"><path data-c="1D715" d="M256 574C256 597 241 610 212 612C243 659 288 683 347 683C439 683 484 606 484 508C484 467 476 417 461 356C444 425 401 460 334 460C257 460 190 428 130 366C70 304 40 235 40 158C40 121 53 83 79 45C110 0 158-22 225-22C315-22 390 20 449 105C505 187 566 329 566 456C566 527 548 587 512 635C473 689 418 716 349 716C282 716 232 693 198 646C171 609 157 579 157 556C157 530 171 517 199 517C229 517 256 544 256 574M439 303C439 240 420 178 381 117C338 48 287 14 228 14C162 14 124 57 124 121C124 149 131 188 145 238C159 288 173 323 188 344C228 401 277 430 334 430C407 430 439 376 439 303Z"></path></g><g data-mml-node="mi" data-latex="L" transform="translate(566,0)"><path data-c="1D43F" d="M520 667C520 678 513 683 500 683L354 680L223 683C208 684 200 676 200 659C200 652 203 647 209 646C218 645 226 644 231 644C262 643 279 641 284 640C289 639 292 636 292 631C292 629 291 623 288 613L156 82C150 60 140 47 125 42C119 40 101 39 70 39C49 39 39 31 39 15C39 5 49 0 70 0L527 0C552 0 554 0 561 19L639 233C642 240 643 245 643 248C643 258 638 263 627 263C617 263 612 254 607 240C588 191 570 154 555 131C518 75 455 39 363 39L270 39C259 39 252 39 249 40C242 40 239 42 239 45C239 47 241 54 244 67L377 601C383 624 396 637 415 642C421 643 442 644 478 644C506 644 520 644 520 667Z"></path></g></g><g data-mml-node="mrow" data-latex="\partial w" transform="translate(220,-686)"><g data-mml-node="mi" data-latex="\partial"><path data-c="1D715" d="M256 574C256 597 241 610 212 612C243 659 288 683 347 683C439 683 484 606 484 508C484 467 476 417 461 356C444 425 401 460 334 460C257 460 190 428 130 366C70 304 40 235 40 158C40 121 53 83 79 45C110 0 158-22 225-22C315-22 390 20 449 105C505 187 566 329 566 456C566 527 548 587 512 635C473 689 418 716 349 716C282 716 232 693 198 646C171 609 157 579 157 556C157 530 171 517 199 517C229 517 256 544 256 574M439 303C439 240 420 178 381 117C338 48 287 14 228 14C162 14 124 57 124 121C124 149 131 188 145 238C159 288 173 323 188 344C228 401 277 430 334 430C407 430 439 376 439 303Z"></path></g><g data-mml-node="mi" data-latex="w" transform="translate(566,0)"><path data-c="1D464" d="M590 391C590 382 595 372 606 362C629 340 641 313 641 281C641 264 635 237 623 198C586 78 539 18 482 18C435 18 412 45 412 100C412 119 416 142 423 171C441 243 460 314 477 387C479 394 480 398 480 401C480 421 469 431 447 431C427 431 414 421 407 401L367 245C352 187 341 167 341 115C341 107 341 101 342 98C319 45 290 18 255 18C205 18 180 47 180 104C180 141 197 204 231 293C242 323 248 344 248 357C248 406 212 442 163 442C118 442 84 417 59 367C39 328 29 301 29 287C29 278 34 273 45 273C58 273 60 279 64 293C88 373 120 413 160 413C174 413 181 403 181 384C181 369 175 347 164 317C127 220 108 154 108 117C108 32 165-11 252-11C294-11 328 10 355 53C375 10 416-11 479-11C541-11 590 30 625 112C648 164 691 302 691 369C691 384 690 394 689 399C685 418 666 442 644 442C618 442 590 417 590 391Z"></path></g></g><rect width="1482" height="60" x="120" y="220"></rect></g><g data-mml-node="mo" data-latex="," transform="translate(6429,0)"><path data-c="2C" d="M139 106C107 106 86 82 86 50C86 20 109-5 139-5C153-5 165-1 174 8L175 0C175-63 154-117 112-160C105-168 101-174 101-178C101-188 105-193 114-193C123-193 135-181 152-158C186-110 203-57 203 0C203 53 185 106 139 106Z"></path></g><g data-mml-node="mspace" data-latex="\quad" transform="translate(6707,0)"></g><g data-mml-node="mi" data-latex="b" transform="translate(7873.7,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g><g data-mml-node="mo" data-latex="\leftarrow" transform="translate(8580.4,0)"><path data-c="2190" d="M918 274L172 274C245 326 289 395 306 482L306 483L307 485C307 502 299 510 283 510C270 510 262 504 259 491C250 444 231 403 203 368C161 316 116 282 68 266C61 263 57 257 57 250C57 243 61 237 68 234C116 218 161 184 203 132C231 97 250 56 259 9C262-4 270-10 283-10C299-10 307-2 307 15L306 17L306 18C289 105 245 174 172 226L918 226C934 226 942 234 942 250C942 263 931 274 918 274Z"></path></g><g data-mml-node="mi" data-latex="b" transform="translate(9858.2,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g><g data-mml-node="mo" data-latex="-" transform="translate(10509.4,0)"><path data-c="2212" d="M698 270L80 270C64 270 56 263 56 250C56 237 64 230 80 230L698 230C714 230 722 237 722 250C722 262 710 270 698 270Z"></path></g><g data-mml-node="mi" data-latex="\eta" transform="translate(11509.7,0)"><path data-c="1D702" d="M379 442C318 442 268 415 229 362C222 407 187 442 136 442C95 442 65 409 44 344C34 311 29 292 29 286C29 277 34 272 45 272C50 272 53 273 56 275C61 284 64 291 65 298C83 374 106 412 133 412C151 412 160 398 160 371C160 358 155 330 144 289L87 61C84 48 78 22 78 17C78-3 89-13 111-13C130-13 144-3 151 17C152 22 158 47 169 90L191 179C203 228 212 265 219 290C222 297 230 311 243 331C279 385 323 412 376 412C409 412 425 390 425 347C425 332 422 312 415 286L303-169C301-177 300-182 300-185C300-206 311-216 332-216C354-216 369-202 376-173L488 274C493 295 496 315 496 332C496 404 451 442 379 442Z"></path></g><g data-mml-node="mfrac" data-latex="\frac{\partial L}{\partial b}" transform="translate(12006.7,0)"><g data-mml-node="mrow" data-latex="\partial L" transform="translate(220,676)"><g data-mml-node="mi" data-latex="\partial"><path data-c="1D715" d="M256 574C256 597 241 610 212 612C243 659 288 683 347 683C439 683 484 606 484 508C484 467 476 417 461 356C444 425 401 460 334 460C257 460 190 428 130 366C70 304 40 235 40 158C40 121 53 83 79 45C110 0 158-22 225-22C315-22 390 20 449 105C505 187 566 329 566 456C566 527 548 587 512 635C473 689 418 716 349 716C282 716 232 693 198 646C171 609 157 579 157 556C157 530 171 517 199 517C229 517 256 544 256 574M439 303C439 240 420 178 381 117C338 48 287 14 228 14C162 14 124 57 124 121C124 149 131 188 145 238C159 288 173 323 188 344C228 401 277 430 334 430C407 430 439 376 439 303Z"></path></g><g data-mml-node="mi" data-latex="L" transform="translate(566,0)"><path data-c="1D43F" d="M520 667C520 678 513 683 500 683L354 680L223 683C208 684 200 676 200 659C200 652 203 647 209 646C218 645 226 644 231 644C262 643 279 641 284 640C289 639 292 636 292 631C292 629 291 623 288 613L156 82C150 60 140 47 125 42C119 40 101 39 70 39C49 39 39 31 39 15C39 5 49 0 70 0L527 0C552 0 554 0 561 19L639 233C642 240 643 245 643 248C643 258 638 263 627 263C617 263 612 254 607 240C588 191 570 154 555 131C518 75 455 39 363 39L270 39C259 39 252 39 249 40C242 40 239 42 239 45C239 47 241 54 244 67L377 601C383 624 396 637 415 642C421 643 442 644 478 644C506 644 520 644 520 667Z"></path></g></g><g data-mml-node="mrow" data-latex="\partial b" transform="translate(346,-686)"><g data-mml-node="mi" data-latex="\partial"><path data-c="1D715" d="M256 574C256 597 241 610 212 612C243 659 288 683 347 683C439 683 484 606 484 508C484 467 476 417 461 356C444 425 401 460 334 460C257 460 190 428 130 366C70 304 40 235 40 158C40 121 53 83 79 45C110 0 158-22 225-22C315-22 390 20 449 105C505 187 566 329 566 456C566 527 548 587 512 635C473 689 418 716 349 716C282 716 232 693 198 646C171 609 157 579 157 556C157 530 171 517 199 517C229 517 256 544 256 574M439 303C439 240 420 178 381 117C338 48 287 14 228 14C162 14 124 57 124 121C124 149 131 188 145 238C159 288 173 323 188 344C228 401 277 430 334 430C407 430 439 376 439 303Z"></path></g><g data-mml-node="mi" data-latex="b" transform="translate(566,0)"><path data-c="1D44F" d="M281 445C245 445 209 428 174 394L243 679C241 688 238 694 226 694C193 694 120 685 107 684C92 682 84 675 84 660C84 650 93 645 112 645C131 645 157 646 157 632C157 628 152 608 143 571L63 249C52 207 47 173 47 148C47 62 93-11 175-11C240-11 297 22 347 89C392 151 415 216 415 283C415 370 364 445 281 445M279 415C318 415 337 385 337 326C337 299 331 263 319 218C297 133 268 75 233 44C213 27 194 19 175 19C134 19 114 51 114 115C114 137 119 170 129 214L151 304C154 319 159 330 165 338C204 389 242 415 279 415Z"></path></g></g><rect width="1447" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container></p>
+<p>其中 <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: -0.489ex;" xmlns="http://www.w3.org/2000/svg" width="1.124ex" height="1.489ex" role="img" focusable="false" viewBox="0 -442 497 658"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="\eta"><g data-mml-node="mi" data-latex="\eta"><path data-c="1D702" d="M379 442C318 442 268 415 229 362C222 407 187 442 136 442C95 442 65 409 44 344C34 311 29 292 29 286C29 277 34 272 45 272C50 272 53 273 56 275C61 284 64 291 65 298C83 374 106 412 133 412C151 412 160 398 160 371C160 358 155 330 144 289L87 61C84 48 78 22 78 17C78-3 89-13 111-13C130-13 144-3 151 17C152 22 158 47 169 90L191 179C203 228 212 265 219 290C222 297 230 311 243 331C279 385 323 412 376 412C409 412 425 390 425 347C425 332 422 312 415 286L303-169C301-177 300-182 300-185C300-206 311-216 332-216C354-216 369-202 376-173L488 274C493 295 496 315 496 332C496 404 451 442 379 442Z"></path></g></g></g></svg></mjx-container> 是学习率。常见变体：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BGD</td>
+<td>每轮用全部样本更新，稳定但慢</td>
+</tr>
+<tr>
+<td>SGD</td>
+<td>每条样本更新一次，快但震荡</td>
+</tr>
+<tr>
+<td>Mini-batch GD</td>
+<td>折中，工程上最常用</td>
+</tr>
+</tbody></table>
+<h2 id="四、Python-实现"><a href="#四、Python-实现" class="headerlink" title="四、Python 实现"></a>四、Python 实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">linear_regression_gd</span>(<span class="params">X, y, lr=<span class="number">0.01</span>, epochs=<span class="number">1000</span></span>):</span><br><span class="line">    m, n = X.shape</span><br><span class="line">    w = np.zeros(n)</span><br><span class="line">    b = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(epochs):</span><br><span class="line">        y_pred = X @ w + b</span><br><span class="line">        grad_w = (<span class="number">2</span> / m) * X.T @ (y_pred - y)</span><br><span class="line">        grad_b = (<span class="number">2</span> / m) * np.<span class="built_in">sum</span>(y_pred - y)</span><br><span class="line">        w -= lr * grad_w</span><br><span class="line">        b -= lr * grad_b</span><br><span class="line">    <span class="keyword">return</span> w, b</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用 sklearn 验证</span></span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_regression</span><br><span class="line">X, y = make_regression(n_samples=<span class="number">200</span>, n_features=<span class="number">1</span>, noise=<span class="number">15</span>, random_state=<span class="number">0</span>)</span><br><span class="line">w, b = linear_regression_gd(X, y, lr=<span class="number">0.05</span>, epochs=<span class="number">2000</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f"w=<span class="subst">{w[<span class="number">0</span>]:<span class="number">.3</span>f}</span>, b=<span class="subst">{b:<span class="number">.3</span>f}</span>"</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f"sklearn: w=<span class="subst">{LinearRegression().fit(X, y).coef_[<span class="number">0</span>]:<span class="number">.3</span>f}</span>, "</span></span><br><span class="line">      <span class="string">f"b=<span class="subst">{LinearRegression().fit(X, y).intercept_:<span class="number">.3</span>f}</span>"</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、常见坑"><a href="#五、常见坑" class="headerlink" title="五、常见坑"></a>五、常见坑</h2><ol>
+<li><strong>特征量纲差异大</strong> → 一定要先 <code>StandardScaler</code>。</li>
+<li><strong>学习率过大</strong> → 损失震荡甚至发散。</li>
+<li><strong>特征共线性</strong> → <mjx-container class="MathJax" jax="SVG" overflow="overflow"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="5.399ex" height="1.884ex" role="img" focusable="false" viewBox="0 -832.5 2386.3 832.5"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math" data-latex="X^\top X"><g data-mml-node="msup" data-latex="X^\top"><g data-mml-node="mi" data-latex="X"><path data-c="1D44B" d="M834 683C817 683 758 680 741 680C721 680 651 683 631 683C616 683 608 675 608 659C608 650 613 645 624 644C648 641 660 633 660 618C660 609 654 598 642 585L486 417C457 485 429 552 400 620C401 622 402 624 405 626C414 636 431 642 455 644C471 646 479 654 479 667C479 678 473 683 460 683C436 683 359 680 335 680C314 680 245 683 224 683C209 683 202 675 202 659C202 649 211 644 229 644C274 644 288 644 300 615L416 342L208 119C205 116 201 112 196 109C155 66 108 42 53 39C36 38 27 29 27 14C30 5 31 0 44 0C61 0 120 3 137 3C158 3 227 0 248 0C263 0 270 8 270 24C270 33 265 38 254 39C230 41 218 50 218 65C218 75 227 89 244 107C306 173 369 239 430 306C464 225 499 145 532 63C531 61 530 59 527 56C518 47 502 42 478 39C463 37 455 29 455 16C455 5 461 0 474 0L599 3C620 3 690 0 708 0C723 0 731 8 731 23C731 33 724 38 709 39C678 39 658 40 651 44C644 48 636 60 628 80L501 383C569 455 620 509 653 546C677 571 693 588 702 595C739 626 780 642 825 644C846 645 851 650 851 669C848 678 847 683 834 683Z"></path></g><g data-mml-node="mi" transform="translate(935.2,363) scale(0.707)" data-latex="\top"><path data-c="22A4" d="M698 664L80 664C64 664 56 656 56 640C56 625 64 617 80 617L365 617L365 4C365-12 373-20 389-20C405-20 413-12 413 4L413 617L698 617C714 617 722 625 722 640C722 653 711 664 698 664Z"></path></g></g><g data-mml-node="mi" data-latex="X" transform="translate(1535.3,0)"><path data-c="1D44B" d="M834 683C817 683 758 680 741 680C721 680 651 683 631 683C616 683 608 675 608 659C608 650 613 645 624 644C648 641 660 633 660 618C660 609 654 598 642 585L486 417C457 485 429 552 400 620C401 622 402 624 405 626C414 636 431 642 455 644C471 646 479 654 479 667C479 678 473 683 460 683C436 683 359 680 335 680C314 680 245 683 224 683C209 683 202 675 202 659C202 649 211 644 229 644C274 644 288 644 300 615L416 342L208 119C205 116 201 112 196 109C155 66 108 42 53 39C36 38 27 29 27 14C30 5 31 0 44 0C61 0 120 3 137 3C158 3 227 0 248 0C263 0 270 8 270 24C270 33 265 38 254 39C230 41 218 50 218 65C218 75 227 89 244 107C306 173 369 239 430 306C464 225 499 145 532 63C531 61 530 59 527 56C518 47 502 42 478 39C463 37 455 29 455 16C455 5 461 0 474 0L599 3C620 3 690 0 708 0C723 0 731 8 731 23C731 33 724 38 709 39C678 39 658 40 651 44C644 48 636 60 628 80L501 383C569 455 620 509 653 546C677 571 693 588 702 595C739 626 780 642 825 644C846 645 851 650 851 669C848 678 847 683 834 683Z"></path></g></g></g></svg></mjx-container> 接近奇异，考虑岭回归。</li>
+<li><strong>欠拟合 vs 过拟合</strong> → 多项式回归 + 正则化是良药。</li>
+</ol>
+<h2 id="六、扩展阅读"><a href="#六、扩展阅读" class="headerlink" title="六、扩展阅读"></a>六、扩展阅读</h2><ul>
+<li>《统计学习方法》- 李航，第 1 章</li>
+<li>CS229 Lecture 1 (Andrew Ng)</li>
+<li>scikit-learn: <a target="_blank" rel="noopener" href="https://scikit-learn.org/stable/modules/linear_model.html#ordinary-least-squares">LinearRegression</a></li>
+</ul>
+<hr>
+<p>下一篇将介绍 <strong>多项式回归与岭回归</strong>，敬请期待。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/NLP/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/NLP/tags/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" rel="tag"># 线性回归</a>
+              <a href="/NLP/tags/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" rel="tag"># 梯度下降</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/NLP/2024/06/10/7769/" rel="next" title="Transformer 架构详解：从 Self-Attention 到多头机制">
+                  Transformer 架构详解：从 Self-Attention 到多头机制 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Your Name</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">7k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6 分钟</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

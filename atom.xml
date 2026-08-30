@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>Your Name</name>
+  </author>
+  <generator uri="https://hexo.io/">Hexo</generator>
+  <icon>https://wxl-1871.github.io/NLP/icon.png</icon>
+  <id>https://wxl-1871.github.io/NLP/</id>
+  <link href="https://wxl-1871.github.io/NLP/" rel="alternate"/>
+  <link href="https://wxl-1871.github.io/NLP/atom.xml" rel="self"/>
+  <rights>All rights reserved 2026, Your Name</rights>
+  <subtitle>机器学习 · 深度学习 · 大模型</subtitle>
+  <title>
+    <![CDATA[ML & DL 笔记]]>
+  </title>
+  <updated>2026-08-30T00:52:42.365Z</updated>
+  <entry>
+    <author>
+      <name>Your Name</name>
+    </author>
+    <category term="大模型" scheme="https://wxl-1871.github.io/NLP/categories/llm/"/>
+    <category term="大模型" scheme="https://wxl-1871.github.io/NLP/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/"/>
+    <category term="LLM" scheme="https://wxl-1871.github.io/NLP/tags/LLM/"/>
+    <category term="Prompt" scheme="https://wxl-1871.github.io/NLP/tags/Prompt/"/>
+    <category term="Agent" scheme="https://wxl-1871.github.io/NLP/tags/Agent/"/>
+    <category term="RAG" scheme="https://wxl-1871.github.io/NLP/tags/RAG/"/>
+    <id>https://wxl-1871.github.io/NLP/2024/07/05/504f/</id>
+    <link href="https://wxl-1871.github.io/NLP/2024/07/05/504f/"/>
+    <published>2024-07-05T01:30:00.000Z</published>
+    <summary>不会写 Prompt 就用不好大模型。本文整理 6 大 Prompt 模式 + ReAct Agent 实战代码，附可复用的模板。</summary>
+    <title>大模型 Prompt 工程实战：从 Zero-Shot 到 ReAct Agent</title>
+    <updated>2026-08-30T00:52:42.365Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Your Name</name>
+    </author>
+    <category term="深度学习" scheme="https://wxl-1871.github.io/NLP/categories/deep-learning/"/>
+    <category term="深度学习" scheme="https://wxl-1871.github.io/NLP/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    <category term="Transformer" scheme="https://wxl-1871.github.io/NLP/tags/Transformer/"/>
+    <category term="注意力机制" scheme="https://wxl-1871.github.io/NLP/tags/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/"/>
+    <category term="NLP" scheme="https://wxl-1871.github.io/NLP/tags/NLP/"/>
+    <id>https://wxl-1871.github.io/NLP/2024/06/10/7769/</id>
+    <link href="https://wxl-1871.github.io/NLP/2024/06/10/7769/"/>
+    <published>2024-06-10T06:00:00.000Z</published>
+    <summary>Transformer 是当代大模型的基石，本文带你拆解 Self-Attention、多头机制、位置编码与 Layer Norm 的工程细节。</summary>
+    <title>Transformer 架构详解：从 Self-Attention 到多头机制</title>
+    <updated>2026-08-30T00:52:42.363Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Your Name</name>
+    </author>
+    <category term="机器学习" scheme="https://wxl-1871.github.io/NLP/categories/machine-learning/"/>
+    <category term="机器学习" scheme="https://wxl-1871.github.io/NLP/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <category term="线性回归" scheme="https://wxl-1871.github.io/NLP/tags/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/"/>
+    <category term="梯度下降" scheme="https://wxl-1871.github.io/NLP/tags/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/"/>
+    <id>https://wxl-1871.github.io/NLP/2024/05/20/2034/</id>
+    <link href="https://wxl-1871.github.io/NLP/2024/05/20/2034/"/>
+    <published>2024-05-20T02:00:00.000Z</published>
+    <summary>线性回归是机器学习的&quot;Hello World&quot;，本文从公式推导到 Python 实现再到梯度下降，帮你一次性吃透。</summary>
+    <title>线性回归：从公式到梯度下降</title>
+    <updated>2026-08-30T00:52:42.360Z</updated>
+  </entry>
+</feed>
