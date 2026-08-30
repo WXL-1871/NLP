@@ -1294,7 +1294,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #ff71ee;
+    background: #ff46ff;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -3189,6 +3189,31 @@ table tr:hover {
   box-shadow: 0 6px 18px rgba(236,64,122,0.35);
   text-decoration: none;
 }
+/* ---------- 编辑按钮 ---------- */
+.home-edit-wrap {
+  margin-top: 20px;
+}
+.home-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ec407a, #c2185b);
+  color: #fff;
+  padding: 10px 28px;
+  border-radius: 24px;
+  font-size: 0.95em;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(236,64,122,0.35);
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+}
+.home-edit-btn:hover {
+  background: linear-gradient(135deg, #d81b60, #ad1457);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(236,64,122,0.45);
+  text-decoration: none;
+}
 /* ---------- 功能导航卡片 ---------- */
 .home-features {
   display: grid;
@@ -3419,4 +3444,42 @@ table tr:hover {
   .home-cat-list .category-list-item {
     padding: 10px 14px;
   }
+}
+/* ============================================================
+   管理中心页面样式 · Admin Page
+   ============================================================ */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #ad1457;
+  border: 2px solid #f8bbd0;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.92em;
+  font-weight: 500;
+  margin: 6px 8px 6px 0;
+  transition: all 0.25s ease;
+}
+.admin-btn:hover {
+  background: #fce4ec;
+  border-color: #ec407a;
+  color: #c2185b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236,64,122,0.2);
+  text-decoration: none;
+}
+.admin-btn-primary {
+  background: linear-gradient(135deg, #ec407a, #c2185b);
+  color: #fff;
+  border-color: #ec407a;
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(236,64,122,0.3);
+}
+.admin-btn-primary:hover {
+  background: linear-gradient(135deg, #d81b60, #ad1457);
+  color: #fff;
+  border-color: #d81b60;
+  box-shadow: 0 5px 16px rgba(236,64,122,0.4);
 }
