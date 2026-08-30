@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wxl-1871.github.io/NLP/about/index.html</loc>
+    
+    <lastmod>2026-08-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wxl-1871.github.io/NLP/2024/07/05/504f/</loc>
     
     <lastmod>2026-08-30</lastmod>
@@ -21,15 +30,6 @@
   
   <url>
     <loc>https://wxl-1871.github.io/NLP/2024/05/20/2034/</loc>
-    
-    <lastmod>2026-08-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wxl-1871.github.io/NLP/about/index.html</loc>
     
     <lastmod>2026-08-30</lastmod>
     
@@ -63,41 +63,6 @@
     <priority>1.0</priority>
   </url>
 
-  
-  <url>
-    <loc>https://wxl-1871.github.io/NLP/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wxl-1871.github.io/NLP/tags/LLM/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wxl-1871.github.io/NLP/tags/Prompt/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wxl-1871.github.io/NLP/tags/Agent/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wxl-1871.github.io/NLP/tags/RAG/</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
   
   <url>
     <loc>https://wxl-1871.github.io/NLP/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
@@ -148,14 +113,42 @@
     <priority>0.2</priority>
   </url>
   
-
-  
   <url>
-    <loc>https://wxl-1871.github.io/NLP/categories/llm/</loc>
+    <loc>https://wxl-1871.github.io/NLP/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
+  
+  <url>
+    <loc>https://wxl-1871.github.io/NLP/tags/LLM/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wxl-1871.github.io/NLP/tags/Prompt/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wxl-1871.github.io/NLP/tags/Agent/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wxl-1871.github.io/NLP/tags/RAG/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+
   
   <url>
     <loc>https://wxl-1871.github.io/NLP/categories/deep-learning/</loc>
@@ -166,6 +159,13 @@
   
   <url>
     <loc>https://wxl-1871.github.io/NLP/categories/machine-learning/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wxl-1871.github.io/NLP/categories/llm/</loc>
     <lastmod>2026-08-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

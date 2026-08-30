@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <author>
-    <name>Your Name</name>
+    <name>王笑丽</name>
   </author>
   <generator uri="https://hexo.io/">Hexo</generator>
   <icon>https://wxl-1871.github.io/NLP/icon.png</icon>
   <id>https://wxl-1871.github.io/NLP/</id>
   <link href="https://wxl-1871.github.io/NLP/" rel="alternate"/>
   <link href="https://wxl-1871.github.io/NLP/atom.xml" rel="self"/>
-  <rights>All rights reserved 2026, Your Name</rights>
-  <subtitle>机器学习 · 深度学习 · 大模型</subtitle>
-  <title>
-    <![CDATA[ML & DL 笔记]]>
-  </title>
+  <rights>All rights reserved 2026, 王笑丽</rights>
+  <subtitle>记录生活 · 分享技术 · 探索未知</subtitle>
+  <title>笑丽的小站</title>
   <updated>2026-08-30T00:52:42.365Z</updated>
   <entry>
     <author>
-      <name>Your Name</name>
+      <name>王笑丽</name>
     </author>
     <category term="大模型" scheme="https://wxl-1871.github.io/NLP/categories/llm/"/>
     <category term="大模型" scheme="https://wxl-1871.github.io/NLP/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/"/>
@@ -33,7 +31,7 @@
   </entry>
   <entry>
     <author>
-      <name>Your Name</name>
+      <name>王笑丽</name>
     </author>
     <category term="深度学习" scheme="https://wxl-1871.github.io/NLP/categories/deep-learning/"/>
     <category term="深度学习" scheme="https://wxl-1871.github.io/NLP/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
@@ -49,7 +47,7 @@
   </entry>
   <entry>
     <author>
-      <name>Your Name</name>
+      <name>王笑丽</name>
     </author>
     <category term="机器学习" scheme="https://wxl-1871.github.io/NLP/categories/machine-learning/"/>
     <category term="机器学习" scheme="https://wxl-1871.github.io/NLP/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>

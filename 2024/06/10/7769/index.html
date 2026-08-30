@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+<meta name="theme-color" content="#f8bbd0"><meta name="generator" content="Hexo 8.1.2">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/NLP/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/NLP/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/NLP/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/NLP/images/logo.svg" color="#222">
+  <link rel="mask-icon" href="/NLP/images/logo.svg" color="#f8bbd0">
 
 <link rel="stylesheet" href="/NLP/css/main.css">
 
@@ -18,18 +17,18 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"wxl-1871.github.io","root":"/NLP/","images":"/NLP/images","scheme":"Gemini","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"stackoverflow-light","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/NLP/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"wxl-1871.github.io","root":"/NLP/","images":"/NLP/images","scheme":"Gemini","darkmode":false,"version":"8.29.0","exturl":false,"sidebar":{"position":"right","width_expanded":300,"width_dual_column":280,"display":"always","padding":20,"offset":16},"hljswrap":true,"codeblock":{"theme":{"light":"stackoverflow-light","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/NLP/js/config.js" defer></script>
 
     <meta name="description" content="Transformer 是当代大模型的基石，本文带你拆解 Self-Attention、多头机制、位置编码与 Layer Norm 的工程细节。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Transformer 架构详解：从 Self-Attention 到多头机制">
 <meta property="og:url" content="https://wxl-1871.github.io/NLP/2024/06/10/7769/index.html">
-<meta property="og:site_name" content="ML &amp; DL 笔记">
+<meta property="og:site_name" content="笑丽的小站">
 <meta property="og:description" content="Transformer 是当代大模型的基石，本文带你拆解 Self-Attention、多头机制、位置编码与 Layer Norm 的工程细节。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-10T06:00:00.000Z">
 <meta property="article:modified_time" content="2026-08-30T00:52:42.363Z">
-<meta property="article:author" content="Your Name">
+<meta property="article:author" content="王笑丽">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="Transformer">
 <meta property="article:tag" content="注意力机制">
@@ -43,7 +42,7 @@
 <script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://wxl-1871.github.io/NLP/2024/06/10/7769/","path":"2024/06/10/7769/","title":"Transformer 架构详解：从 Self-Attention 到多头机制"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Transformer 架构详解：从 Self-Attention 到多头机制 | ML & DL 笔记</title>
+<title>Transformer 架构详解：从 Self-Attention 到多头机制 | 笑丽的小站</title>
   
 
 
@@ -190,7 +189,7 @@ mjx-container[display="true"] {
 mjx-container[display="true"] + br {
   display: none;
 }
-</style><link rel="alternate" href="/NLP/atom.xml" title="ML & DL 笔记" type="application/atom+xml">
+</style><link rel="alternate" href="/NLP/atom.xml" title="笑丽的小站" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
@@ -211,10 +210,10 @@ mjx-container[display="true"] + br {
 
     <a href="/NLP/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <p class="site-title">ML & DL 笔记</p>
+      <p class="site-title">笑丽的小站</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">机器学习 · 深度学习 · 大模型</p>
+      <p class="site-subtitle" itemprop="description">记录生活 · 分享技术 · 探索未知</p>
   </div>
 
   <div class="site-nav-right">
@@ -257,10 +256,10 @@ mjx-container[display="true"] + br {
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Your Name"
-      src="/NLP/images/avatar.gif">
-  <p class="site-author-name" itemprop="name">Your Name</p>
-  <div class="site-description" itemprop="description">记录机器学习、深度学习与大语言模型的学习笔记、实战与思考</div>
+    <img class="site-author-image" itemprop="image" alt="王笑丽"
+      src="/NLP/images/avatar-girl.png">
+  <p class="site-author-name" itemprop="name">王笑丽</p>
+  <div class="site-description" itemprop="description">一个记录学习、生活与思考的个人空间，涵盖技术笔记、读书心得与日常随笔</div>
 </div>
 <div class="site-state-wrap animated">
   <nav class="site-state">
@@ -284,10 +283,13 @@ mjx-container[display="true"] + br {
 </div>
   <div class="links-of-author animated">
       <span class="links-of-author-item">
-        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+        <a href="https://github.com/WXL-1871" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;WXL-1871" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
         <a href="mailto:yourname@example.com" title="E-Mail → mailto:yourname@example.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/NLP/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i>RSS</a>
       </span>
   </div>
 
@@ -315,17 +317,17 @@ mjx-container[display="true"] + br {
     <link itemprop="mainEntityOfPage" href="https://wxl-1871.github.io/NLP/2024/06/10/7769/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/NLP/images/avatar.gif">
-      <meta itemprop="name" content="Your Name">
+      <meta itemprop="image" content="/NLP/images/avatar-girl.png">
+      <meta itemprop="name" content="王笑丽">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ML & DL 笔记">
-      <meta itemprop="description" content="记录机器学习、深度学习与大语言模型的学习笔记、实战与思考">
+      <meta itemprop="name" content="笑丽的小站">
+      <meta itemprop="description" content="一个记录学习、生活与思考的个人空间，涵盖技术笔记、读书心得与日常随笔">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Transformer 架构详解：从 Self-Attention 到多头机制 | ML & DL 笔记">
+      <meta itemprop="name" content="Transformer 架构详解：从 Self-Attention 到多头机制 | 笑丽的小站">
       <meta itemprop="description" content="Transformer 是当代大模型的基石，本文带你拆解 Self-Attention、多头机制、位置编码与 Layer Norm 的工程细节。">
     </span>
       <header class="post-header">
@@ -493,7 +495,7 @@ x \leftarrow x + \text{Sublayer}(\text{LayerNorm}(x))
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
-    <span class="author" itemprop="copyrightHolder">Your Name</span>
+    <span class="author" itemprop="copyrightHolder">王笑丽</span>
   </div>
 <div class="wordcount">
   <span class="post-meta-item">
@@ -526,6 +528,7 @@ x \leftarrow x + \text{Sublayer}(\text{LayerNorm}(x))
     <i class="fa fa-arrow-up fa-lg"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
